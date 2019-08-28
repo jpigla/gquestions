@@ -1,15 +1,17 @@
+# -*- coding: utf-8 -*-
+
 usage='''
 ❓❔👾 Gquestions CLI Usage ❔❓
 
 🔍 Usage:
-    gquestions.py query <keyword> (en|es) [depth <depth>] [--csv] [--headless]
+    gquestions.py query <keyword> (en|de) [depth <depth>] [--csv] [--headless]
     gquestions.py (-h | --help)
 
 💡 Examples:
     ▶️  gquestions.py query "flights" en              Search "flights" in English and export in html
     ▶️  gquestions.py query "flights" en --headless   Search headlessly "flights" in English and export in html
-    ▶️  gquestions.py query "vuelos" es --csv         Search "vuelos" in Spanish and export in html and csv
-    ▶️  gquestions.py query "vuelos" es depth 1       Search "vuelos" in Spanish with a depth of 1 and export in html
+    ▶️  gquestions.py query "flüge" de --csv         Search "flüge" in German and export in html and csv
+    ▶️  gquestions.py query "flüge" de depth 1       Search "flüge" in German with a depth of 1 and export in html
     ▶️  gquestions.py -h                              Print this message
    
 👀 Options:
@@ -75,16 +77,15 @@ def newSearch(browser,query):
         browser.get("https://www.google.com?hl=en")
         searchbox = browser.find_element_by_xpath("//input[@aria-label='Search']")
     else:
-        browser.get("https://www.google.com?hl=es")
-        searchbox = browser.find_element_by_xpath("//input[@aria-label='Buscar']")
-    
+        browser.get("https://www.google.de?hl=de")
+        searchbox = browser.find_element_by_xpath("//input[@aria-label='Suche']")
     searchbox.send_keys(query)
     sleepBar(2)
     tabNTimes()
     if lang== "en":
         searchbtn = browser.find_elements_by_xpath("//input[@aria-label='Google Search']")
     else:
-    	searchbtn = browser.find_elements_by_xpath("//input[@aria-label='Buscar con Google']")
+        searchbtn = browser.find_elements_by_xpath("//input[@aria-label='Google-Suche']")
     try:
         searchbtn[-1].click()
     except:
@@ -100,7 +101,7 @@ def scrollToFeedback():
     if lang == "en":
         el = browser.find_element_by_xpath("//div[@class='kno-ftr']//div/following-sibling::a[text()='Feedback']")
     else:
-    	el = browser.find_element_by_xpath("//div[@class='kno-ftr']//div/following-sibling::a[text()='Enviar comentarios']")
+        el = browser.find_element_by_xpath("//div[@class='kno-ftr']//div/following-sibling::a[text()='Feedback geben']")
 
     actions = ActionChains(browser)
     actions.move_to_element(el).perform()
@@ -277,7 +278,9 @@ def flatten_csv(data,depth,prettyname):
             _ = json_normalize(data[0]["children"], 'children', ['name', 'parent',['children',]], record_prefix='inner.')
             _.drop(columns=['children','inner.children','inner.parent'], inplace=True)
             columnTitle = ['parent','name','inner.name']
+            # columnTitle = ['Suchbegriff','Frage 1','Frage']
             _ = _.reindex(columns=columnTitle)
+            _.columns=["Suchbegriff", "Frage #1", "Frage #2"]
             _.to_csv(prettyname,sep=";",encoding='utf-8')
         elif depth == 1:
             df = json_normalize(data[0]["children"], meta=['name','children','parent'], record_path="children", record_prefix='inner.')
@@ -288,7 +291,8 @@ def flatten_csv(data,depth,prettyname):
             merge.drop(columns=['name'], inplace=True)
             columnTitle = ['parent','inner.parent','inner.name','inner.inner.name']
             merge = merge.reindex(columns=columnTitle)
-            merge = merge.drop_duplicates(subset='inner.inner.name', keep='first')
+            merge.columns=["Suchbegriff", "Frage #1", "Frage #2", "Frage #3"]
+            merge = merge.drop_duplicates(subset='Frage #3', keep='first')
             merge.to_csv(prettyname,sep=';',encoding='utf-8')
     except Exception as e:
         logging.warning(f"{e}")
@@ -308,8 +312,8 @@ if __name__ == "__main__":
 
     if args['en']:
         lang = "en"
-    elif args['es']:
-        lang = "es"
+    else:
+        lang = "de"
         
 
 

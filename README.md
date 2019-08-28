@@ -16,10 +16,15 @@
 pip install -r requirements.txt
 ```
 
+## Customization by Philipp
+
+* added search for German language / SERP (removed Spain)
+* changed column titles in csv export
+
 ## 🔍 Usage:
 
 ```
-python gquestions.py query <keyword> (en|es) [depth <depth>] [--csv] [--headless]
+python gquestions.py query <keyword> (en|de) [depth <depth>] [--csv] [--headless]
 ```
 
 Print help message.
@@ -27,6 +32,7 @@ Print help message.
 ```
 gquestions.py (-h | --help)
 ```
+
 
 ## 💡 Examples:
 Search "flights" in English and export in html
@@ -41,14 +47,14 @@ python gquestions.py query "flights" en --headless
 
 ```
 
-Search "vuelos" in Spanish and export in html and csv
+Search "flüge" in German and export in html and csv
 ```
-python gquestions.py query "vuelos" es --csv
+python gquestions.py query "flüge" de --csv
 ```
 
-Search "vuelos" in Spanish with a depth of 1 and export in html
+Search "flüge" in German with a depth of 1 and export in html
 ```
-python gquestions.py query "vuelos" es depth 1 
+python gquestions.py query "flüge" de depth 1 
 ```
 
 Advanced use: using operators with queries:
