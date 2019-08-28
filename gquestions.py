@@ -64,8 +64,9 @@ def initBrowser(headless=False):
         chrome_path = "driver/chromedriver.exe"
     else:
         chrome_path = "driver/chromedriver"
-    chrome_options = Options()
-    chrome_options.add_argument("--disable-features=NetworkService")
+        chrome_options = Options()
+        chrome_options.add_argument("--disable-features=NetworkService")
+        chrome_options.add_argument('--incognito')
     if headless:
         chrome_options.add_argument('headless')
     return webdriver.Chrome(options=chrome_options,executable_path=chrome_path)
