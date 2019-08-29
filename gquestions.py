@@ -8,11 +8,11 @@ usage='''
     gquestions.py (-h | --help)
 
 💡 Examples:
-    ▶️  gquestions.py query "flights" en              Search "flights" in English and export in html
-    ▶️  gquestions.py query "flights" en --headless   Search headlessly "flights" in English and export in html
-    ▶️  gquestions.py query "flüge" de --csv         Search "flüge" in German and export in html and csv
-    ▶️  gquestions.py query "flüge" de depth 1       Search "flüge" in German with a depth of 1 and export in html
-    ▶️  gquestions.py -h                              Print this message
+    ▶️  gquestions.py query "flights" en                Search "flights" in English and export in html
+    ▶️  gquestions.py query "flights" en --headless     Search headlessly "flights" in English and export in html
+    ▶️  gquestions.py query "flüge" de --csv            Search "flüge" in German and export in html and csv
+    ▶️  gquestions.py query "flüge" de depth 1          Search "flüge" in German with a depth of 1 and export in html
+    ▶️  gquestions.py -h                                Print this message
    
 👀 Options:
     -h, --help
@@ -48,10 +48,10 @@ def sleepBar(seconds):
         sleep(1)
 
 def prettyOutputName(filetype='html'):
-    _query = re.sub('\s|\"|\/|\:|\.','_', query.rstrip())
+    _query = re.sub('\s|\"|\/|\:|\+|\.','_', query.rstrip())
     prettyname = _query
     ts = time.time()
-    st = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y_%H-%M-%S-%f')
+    st = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y_%H-%M-%S')
     if filetype != 'html':
         prettyname += "_" + st + "." + filetype
     else:
@@ -279,7 +279,6 @@ def flatten_csv(data,depth,prettyname):
             _ = json_normalize(data[0]["children"], 'children', ['name', 'parent',['children',]], record_prefix='inner.')
             _.drop(columns=['children','inner.children','inner.parent'], inplace=True)
             columnTitle = ['parent','name','inner.name']
-            # columnTitle = ['Suchbegriff','Frage 1','Frage']
             _ = _.reindex(columns=columnTitle)
             _.columns=["Suchbegriff", "Frage #1", "Frage #2"]
             _.to_csv(prettyname,sep=";",encoding='utf-8')
