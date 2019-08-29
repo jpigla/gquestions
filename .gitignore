@@ -1,2 +1,6 @@
-.*
 !.gitignore
+.*
+/csv
+/html
+gquestions_origin.py
+kws.txt
